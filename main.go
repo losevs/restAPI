@@ -53,7 +53,7 @@ func PostToDo(context *gin.Context) {
 func main() {
 	router := gin.Default()
 	router.GET("/todos", GetToDos)
-	router.GET("todos/:id", GetToDo)
+	router.GET("/todos/:id", GetToDo)
 	router.POST("/new", PostToDo)
 	log.Fatalln(router.Run(":80"))
 }
