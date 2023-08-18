@@ -21,14 +21,13 @@ var todos = []todo{
 
 func GetToDos(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, todos)
-	// context.Writer.Write([]byte("hello"))
 }
 
 func GetToDo(context *gin.Context) {
 	id := context.Param("id")
 	needToDo, err := findToDo(id)
 	if err != nil {
-		return
+		context.Writer.WriteHeader(http.StatusBadRequest)
 	}
 	context.IndentedJSON(http.StatusOK, needToDo)
 }
@@ -44,7 +43,7 @@ func findToDo(id string) (*todo, error) {
 func PostToDo(context *gin.Context) {
 	var newTodo todo
 	if err := context.BindJSON(&newTodo); err != nil {
-		return
+		context.Writer.WriteHeader(http.StatusBadRequest)
 	}
 	todos = append(todos, newTodo)
 	context.IndentedJSON(http.StatusCreated, newTodo)
