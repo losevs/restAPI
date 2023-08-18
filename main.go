@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -18,9 +19,26 @@ var todos = []todo{
 	{ID: "2", Name: "Cook dinner", Completed: false},
 }
 
-func GetToDo(context *gin.Context) {
+func GetToDos(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, todos)
 	// context.Writer.Write([]byte("hello"))
+}
+
+func GetToDo(context *gin.Context) {
+	id := context.Param("id")
+	needToDo, err := findToDo(id)
+	if err != nil {
+		return
+	}
+	context.IndentedJSON(http.StatusOK, needToDo)
+}
+func findToDo(id string) (*todo, error) {
+	for _, j := range todos {
+		if j.ID == id {
+			return &j, nil
+		}
+	}
+	return nil, errors.New("")
 }
 
 func PostToDo(context *gin.Context) {
@@ -34,7 +52,8 @@ func PostToDo(context *gin.Context) {
 
 func main() {
 	router := gin.Default()
-	router.GET("/", GetToDo)
+	router.GET("/todos", GetToDos)
+	router.GET("todos/:id", GetToDo)
 	router.POST("/new", PostToDo)
 	log.Fatalln(router.Run(":80"))
 }
