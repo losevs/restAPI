@@ -49,14 +49,14 @@ func PostToDo(context *gin.Context) {
 	context.IndentedJSON(http.StatusCreated, newTodo)
 }
 
-func findPatchToDo(id string) (*todo, error) {
+func findPatchToDo(id string) (todo, error) {
 	for i, j := range todos {
 		if j.ID == id {
 			todos[i].Completed = !todos[i].Completed
-			return &j, nil
+			return todos[i], nil
 		}
 	}
-	return nil, errors.New("no id")
+	return todo{}, errors.New("no id")
 }
 
 func PatchToDo(context *gin.Context) {
